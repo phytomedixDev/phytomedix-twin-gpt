@@ -60,38 +60,55 @@ const API_URL = "https://script.google.com/macros/s/AKfycbw6Oqo22yfc3Hpnx7W3lvrO
 
 function runTwin() {
 
+  document.getElementById("result").innerHTML = "Running Twin...";
+
   const payload = {
     email: document.getElementById("email").value,
-    "Q-001": parseInt(document.getElementById("age").value),
+    "Q-001": document.getElementById("age").value,
     "Q-003": document.getElementById("smoking").value,
-    "Q-006": parseFloat(document.getElementById("sleep").value),
-    "Q-019": parseFloat(document.getElementById("height").value),
-    "Q-021": parseFloat(document.getElementById("weight").value),
-    "Q-020": parseFloat(document.getElementById("bp").value),
-    "Q-022": parseFloat(document.getElementById("glucose").value),
+    "Q-006": document.getElementById("sleep").value,
+    "Q-019": document.getElementById("height").value,
+    "Q-021": document.getElementById("weight").value,
+    "Q-020": document.getElementById("bp").value,
+    "Q-022": document.getElementById("glucose").value,
     "Q-030": 6,
     "Q-031": 7,
     "Q-032": 5
   };
 
-  fetch(API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload)
-  })
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById("result").innerHTML =
-      "<h3>Twin Output</h3>" +
-      "Score: " + data.output.overallScore + "<br>" +
-      "Bio Age: " + data.output.biologicalAge + "<br>" +
-      "Momentum: " + data.output.momentum + "<br>" +
-      "Strain: " + data.output.strainIndex + "<br>" +
-      "Recovery: " + data.output.recoveryCapacity;
-  });
+  const query = encodeURIComponent(JSON.stringify(payload));
 
+  const script = document.createElement("script");
+  script.src = API_URL + "?callback=handleTwinResponse&payload=" + query;
+
+  document.body.appendChild(script);
+}
+
+function handleTwinResponse(response) {
+
+  if(response.status !== "success"){
+    document.getElementById("result").innerHTML =
+      "<b>Error:</b> " + response.message;
+    return;
+  }
+
+  const data = response.output;
+
+  document.getElementById("result").innerHTML =
+    "<h3>🧬 Twin Output</h3>" +
+    "<b>Functional Score:</b> " + data.overallScore + "<br>" +
+    "<b>Biological Age:</b> " + data.biologicalAge + "<br>" +
+    "<b>Momentum:</b> " + data.momentum + "<br>" +
+    "<b>Strain Index:</b> " + data.strainIndex + "<br>" +
+    "<b>Recovery Capacity:</b> " + data.recoveryCapacity + "<br><br>" +
+
+    "<b>Domain Scores:</b><br>" +
+    "Metabolic: " + data.scores.metabolic + "<br>" +
+    "Cardio: " + data.scores.cardio + "<br>" +
+    "Cognitive: " + data.scores.cognitive + "<br>" +
+    "Joints: " + data.scores.joints + "<br>" +
+    "Gut: " + data.scores.gut + "<br>" +
+    "Hormonal: " + data.scores.hormonal;
 }
 
 </script>
