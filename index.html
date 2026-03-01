@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Phytomedix/ Excell Nutrients Twin Test GPT</title>
+  <title>Phytomedix-Excell Nutrients Twin Test</title>
+
   <style>
     body {
       font-family: Arial;
@@ -31,9 +32,14 @@
     }
   </style>
 </head>
+
 <body>
 
-<h2>🧬 Phytomedix/Excell Nutrients Digital Twin Test</h2>
+<h2>🧬 Phytomedix Digital Twin</h2>
+
+<!-- ====== INTAKE ====== -->
+
+<h3>Initial Twin Assessment</h3>
 
 <input id="email" placeholder="Email"><br>
 <input id="age" placeholder="Age"><br>
@@ -52,12 +58,32 @@
 
 <button onclick="runTwin()">Run Twin</button>
 
+<hr><br>
+
+<!-- ====== MICRO CHECKIN ====== -->
+
+<h3>🔁 Daily Micro Check-In</h3>
+
+<input id="checkin_email" placeholder="Email"><br>
+<input id="adherence" placeholder="Adherence (1-100)"><br>
+<input id="energy" placeholder="Energy (1-10)"><br>
+<input id="stress" placeholder="Stress (1-10)"><br>
+<input id="sleepq" placeholder="Sleep Quality (1-10)"><br>
+
+<button onclick="runCheckin()">Update My Twin</button>
+
+<br><br>
+
 <div id="result"></div>
+
+<!-- ================= SCRIPT ================= -->
 
 <script>
 
 const API_URL = "https://script.google.com/macros/s/AKfycbw6Oqo22yfc3Hpnx7W3lvrOJ2SNL3VYm9Mgd1UrlZKTdASN_OnAw2QSBO8QXOBe_8X-fg/exec";
 
+
+// ================= RUN TWIN =================
 function runTwin() {
 
   document.getElementById("result").innerHTML = "Running Twin...";
@@ -100,15 +126,46 @@ function handleTwinResponse(response) {
     "<b>Biological Age:</b> " + data.biologicalAge + "<br>" +
     "<b>Momentum:</b> " + data.momentum + "<br>" +
     "<b>Strain Index:</b> " + data.strainIndex + "<br>" +
-    "<b>Recovery Capacity:</b> " + data.recoveryCapacity + "<br><br>" +
+    "<b>Recovery Capacity:</b> " + data.recoveryCapacity;
+}
 
-    "<b>Domain Scores:</b><br>" +
-    "Metabolic: " + data.scores.metabolic + "<br>" +
-    "Cardio: " + data.scores.cardio + "<br>" +
-    "Cognitive: " + data.scores.cognitive + "<br>" +
-    "Joints: " + data.scores.joints + "<br>" +
-    "Gut: " + data.scores.gut + "<br>" +
-    "Hormonal: " + data.scores.hormonal;
+
+// ================= MICRO CHECKIN =================
+function runCheckin() {
+
+  document.getElementById("result").innerHTML = "Updating Twin...";
+
+  const payload = {
+    action: "checkin",
+    email: document.getElementById("checkin_email").value,
+    adherence: document.getElementById("adherence").value,
+    energy: document.getElementById("energy").value,
+    stress: document.getElementById("stress").value,
+    sleep_quality: document.getElementById("sleepq").value
+  };
+
+  const query = encodeURIComponent(JSON.stringify(payload));
+
+  const script = document.createElement("script");
+  script.src = API_URL + "?callback=handleCheckinResponse&payload=" + query;
+
+  document.body.appendChild(script);
+}
+
+function handleCheckinResponse(response){
+
+  if(response.status !== "success"){
+    document.getElementById("result").innerHTML =
+      "<b>Error:</b> " + response.message;
+    return;
+  }
+
+  document.getElementById("result").innerHTML =
+    "<h3>✅ Twin Updated</h3>" +
+    "Adherence: " + response.output.adherence + "<br>" +
+    "Energy: " + response.output.energy + "<br>" +
+    "Stress: " + response.output.stress + "<br>" +
+    "Sleep: " + response.output.sleep;
 }
 
 </script>
