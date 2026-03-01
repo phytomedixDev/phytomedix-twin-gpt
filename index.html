@@ -35,7 +35,7 @@
 
 <body>
 
-<h2>🧬 Phytomedix Digital Twin</h2>
+<h2>🧬 Phytomedix-Excell Nutrients Digital Twin</h2>
 
 <!-- ====== INTAKE ====== -->
 
@@ -88,28 +88,40 @@ function runTwin() {
 
   document.getElementById("result").innerHTML = "Running Twin...";
 
- const payload = {
-  email: document.getElementById("email").value.trim(),
-  "Q-001": Number(document.getElementById("age").value) || 0,
-  "Q-003": document.getElementById("smoking").value,
-  "Q-006": Number(document.getElementById("sleep").value) || 0,
-  "Q-019": Number(document.getElementById("height").value) || 0,
-  "Q-021": Number(document.getElementById("weight").value) || 0,
-  "Q-020": Number(document.getElementById("bp").value) || 0,
-  "Q-022": Number(document.getElementById("glucose").value) || 0,
-  "Q-030": 6,
-  "Q-031": 7,
-  "Q-032": 5
-};
+  const payload = {
+    email: document.getElementById("email").value.trim(),
+    "Q-001": Number(document.getElementById("age").value) || 0,
+    "Q-003": document.getElementById("smoking").value,
+    "Q-006": Number(document.getElementById("sleep").value) || 0,
+    "Q-019": Number(document.getElementById("height").value) || 0,
+    "Q-021": Number(document.getElementById("weight").value) || 0,
+    "Q-020": Number(document.getElementById("bp").value) || 0,
+    "Q-022": Number(document.getElementById("glucose").value) || 0,
+    "Q-030": 6,
+    "Q-031": 7,
+    "Q-032": 5
+  };
+
+  if(!payload.email){
+    document.getElementById("result").innerHTML = "Email required";
+    return;
+  }
 
   const query = encodeURIComponent(JSON.stringify(payload));
 
   const script = document.createElement("script");
+
+  script.onerror = function(){
+    document.getElementById("result").innerHTML = "Engine error — check inputs";
+  };
+
   script.src = API_URL + "?callback=handleTwinResponse&payload=" + query;
 
   document.body.appendChild(script);
 }
 
+
+// ================= HANDLE TWIN =================
 function handleTwinResponse(response) {
 
   if(response.status !== "success"){
@@ -130,7 +142,7 @@ function handleTwinResponse(response) {
 }
 
 
-// ================= MICRO CHECKIN =================
+// ================= MICRO CHECK-IN =================
 function runCheckin() {
 
   document.getElementById("result").innerHTML = "Updating Twin...";
@@ -144,14 +156,26 @@ function runCheckin() {
     sleep_quality: document.getElementById("sleepq").value
   };
 
+  if(!payload.email){
+    document.getElementById("result").innerHTML = "Email required";
+    return;
+  }
+
   const query = encodeURIComponent(JSON.stringify(payload));
 
   const script = document.createElement("script");
+
+  script.onerror = function(){
+    document.getElementById("result").innerHTML = "Check-in failed";
+  };
+
   script.src = API_URL + "?callback=handleCheckinResponse&payload=" + query;
 
   document.body.appendChild(script);
 }
 
+
+// ================= HANDLE CHECK-IN =================
 function handleCheckinResponse(response){
 
   if(response.status !== "success"){
