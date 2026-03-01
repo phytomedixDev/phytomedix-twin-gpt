@@ -88,19 +88,19 @@ function runTwin() {
 
   document.getElementById("result").innerHTML = "Running Twin...";
 
-  const payload = {
-    email: document.getElementById("email").value,
-    "Q-001": document.getElementById("age").value,
-    "Q-003": document.getElementById("smoking").value,
-    "Q-006": document.getElementById("sleep").value,
-    "Q-019": document.getElementById("height").value,
-    "Q-021": document.getElementById("weight").value,
-    "Q-020": document.getElementById("bp").value,
-    "Q-022": document.getElementById("glucose").value,
-    "Q-030": 6,
-    "Q-031": 7,
-    "Q-032": 5
-  };
+ const payload = {
+  email: document.getElementById("email").value.trim(),
+  "Q-001": Number(document.getElementById("age").value) || 0,
+  "Q-003": document.getElementById("smoking").value,
+  "Q-006": Number(document.getElementById("sleep").value) || 0,
+  "Q-019": Number(document.getElementById("height").value) || 0,
+  "Q-021": Number(document.getElementById("weight").value) || 0,
+  "Q-020": Number(document.getElementById("bp").value) || 0,
+  "Q-022": Number(document.getElementById("glucose").value) || 0,
+  "Q-030": 6,
+  "Q-031": 7,
+  "Q-032": 5
+};
 
   const query = encodeURIComponent(JSON.stringify(payload));
 
